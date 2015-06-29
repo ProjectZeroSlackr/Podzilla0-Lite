@@ -36,11 +36,13 @@
 #include "ipod.h"
 #include "mlist.h"
 #include "piezo.h"
+#include "textinput.h"
 
 static GR_TIMER_ID browser_key_timer;
 static GR_WINDOW_ID browser_wid;
 static GR_GC_ID browser_gc;
 static menu_st *browser_menu, *browser_menu_overlay;
+static char * browser_rename_oldname;
 
 #define FILE_TYPE_PROGRAM 0
 #define FILE_TYPE_DIRECTORY 1
@@ -59,32 +61,33 @@ static char *current_file;
 static int browser_nbEntries = 0;
 static Directory browser_entries[MAX_ENTRIES];
 
-extern int is_video_type(char *extension);
-extern void new_video_window(char *filename);
+// extern int is_video_type(char *extension);
+// extern void new_video_window(char *filename);
 extern void new_textview_window(char * filename);
-extern int is_image_type(char *extension);
-#ifdef MIKMOD
+// extern int is_image_type(char *extension);
+/*#ifdef MIKMOD
 extern int is_mikmod_playlist_type(char *extension);
 extern int is_mikmod_song_type(char *extension);
 extern void new_mikmod_player(char *filename);
 extern void new_mikmod_player_song(char *filename);
-#endif
+#endif*/
 #ifdef __linux__
-#ifndef MPDC
-extern int is_mp3_type(char *extension);
-extern int is_aac_type(char *extension);
-extern void new_mp3_window(char *filename, char *album, char *artist,
-		char *title, unsigned short len);
-extern void new_aac_window_get_meta(char *filename);
-#endif /* !MPDC */
-extern int is_raw_audio_type(char *extension);
-extern void new_playback_window(char *filename);
-extern int is_tzx_audio_type(char *extension);
-extern void new_tzx_playback_window(char *filename);
+// #ifndef MPDC
+// extern int is_mp3_type(char *extension);
+// extern int is_aac_type(char *extension);
+// extern void new_mp3_window(char *filename, char *album, char *artist,
+// 		char *title, unsigned short len);
+// extern void new_aac_window_get_meta(char *filename);
+// #endif /* !MPDC */
+// extern int is_raw_audio_type(char *extension);
+// extern void new_playback_window(char *filename);
+// extern int is_tzx_audio_type(char *extension);
+// extern void new_tzx_playback_window(char *filename);
 #endif /* __linux__ */
 extern int is_text_type(char * extension);
 extern int is_ascii_file(char *filename);
 extern void new_stringview_window(char *buf, char *title);
+extern void new_podwrite_window_with_file(char * filename);
 void new_exec_window(char *filename);
 
 static int dir_cmp(const void *x, const void *y) 
@@ -291,37 +294,37 @@ static void handle_type_other(char *filename)
 			new_message_window(_("No Default Action for this Filetype"));
 		}
 	}
-#ifdef MIKMOD
-	else if (is_mikmod_playlist_type(ext)) {
-		new_mikmod_player(filename);
-	}
-	else if (is_mikmod_song_type(ext)) {
-		new_mikmod_player_song(filename);
-	}
-#endif
-	else if (is_image_type(ext)) {
-		new_image_window(filename);
-	}
-#ifdef __linux__
-#ifndef MPDC
-	else if (is_mp3_type(ext)) {
-		new_mp3_window(filename, _("Unknown Album"),
-				_("Unknown Artist"), _("Unknown Title"), 0);
-	}
-	else if (is_aac_type(ext)) {
-		new_aac_window_get_meta(filename);
-	}
-#endif /* !MPDC */
-	else if (is_tzx_audio_type(ext)) {
-		new_tzx_playback_window(filename);
-	}
-	else if (is_raw_audio_type(ext)) {
-		new_playback_window(filename);
-	}
-#endif /* __linux __ */
-	else if (is_video_type(ext)) {
-		new_video_window(filename);
-	}
+// #ifdef MIKMOD
+// 	else if (is_mikmod_playlist_type(ext)) {
+// 		new_mikmod_player(filename);
+// 	}
+// 	else if (is_mikmod_song_type(ext)) {
+// 		new_mikmod_player_song(filename);
+// 	}
+// #endif
+// 	else if (is_image_type(ext)) {
+// 		new_image_window(filename);
+// 	}
+// #ifdef __linux__
+// #ifndef MPDC
+// 	else if (is_mp3_type(ext)) {
+// 		new_mp3_window(filename, _("Unknown Album"),
+// 				_("Unknown Artist"), _("Unknown Title"), 0);
+// 	}
+// 	else if (is_aac_type(ext)) {
+// 		new_aac_window_get_meta(filename);
+// 	}
+// #endif /* !MPDC */
+// 	else if (is_tzx_audio_type(ext)) {
+// 		new_tzx_playback_window(filename);
+// 	}
+// 	else if (is_raw_audio_type(ext)) {
+// 		new_playback_window(filename);
+// 	}
+// #endif /* __linux __ */
+// 	else if (is_video_type(ext)) {
+// 		new_video_window(filename);
+// 	}
 	else if (is_script_type(ext)) {
 		browser_exec_file(filename);
 	}
@@ -366,6 +369,11 @@ static void browser_vip_open_file()
 	snprintf(execline, len, "viP \"%s/%s\"", current_dir, current_file);
 	new_exec_window(execline);
 	free(execline);
+}
+
+static void browser_podwrite_open_file()
+{
+	new_podwrite_window_with_file(current_file);
 }
 
 static void browser_pipe_exec()
@@ -476,6 +484,23 @@ static void browser_delete_confirm()
 	}
 }
 
+static void browser_rename_callback()
+{
+	if (text_get_buffer()[0] != 0) {
+		if ( rename(browser_rename_oldname, text_get_buffer()) == -1 ) {
+			pz_perror(current_file);
+		} else {
+			browser_mscandir("./");
+		}
+	}
+}
+
+static void browser_rename()
+{
+	browser_rename_oldname = current_file;
+	new_text_box(10, 40, 0, 0, current_file, browser_rename_callback);
+}
+
 static void browser_action(unsigned short userChoice)
 {
 	current_file = browser_entries[userChoice].full_name;
@@ -499,10 +524,15 @@ static void browser_action(unsigned short userChoice)
 			menu_add_item(browser_menu, _("Open with viP"),
 					browser_vip_open_file, 0, ACTION_MENU |
 					SUB_MENU_PREV);
+			menu_add_item(browser_menu, _("Open with PodWrite"),
+					browser_podwrite_open_file, 0, ACTION_MENU |
+					SUB_MENU_PREV);
 		break;
 	}
 	menu_add_item(browser_menu, _("Delete"),  browser_delete_confirm, 0,
 			ACTION_MENU | ARROW_MENU);
+	menu_add_item(browser_menu, _("Rename"),  browser_rename, 0,
+			ACTION_MENU);
 }
 
 static int browser_do_keystroke(GR_EVENT * event)

@@ -33,26 +33,27 @@ extern void new_stringview_window(char *buf, char *title);
 
 static void populate_credits() {
 	int i, len = 0;
-	char *cnames[] = {"Bernard Leach", "Matthew J. Sahagian",
-			"Courtney Cavin", "matz-josh", "Matthis Rouch",
-		       	"ansi", "Jens Taprogge", "Fredrik Bergholtz",
-			"Jeffrey Nelson", "Scott Lawrence",
-			"Cameron Nishiyama", "Prashant V", "Alastair Stuart",
-			"David Carne", "Nik Rolls", "Filippo Forlani", 
-			"Martin Kaltenbrunner", "Adam Johnston",
-		        "Matthew Westcott", "Nils Schneider", "Damien Marchal",
-			"Joshua Oreman", "Brett Ryland",
+	char *cnames[] = {"=Compilied thanks to=", "    [Keripo n mundi]", "~iPL Developers~",
+			"    Bernard Leach", "    Matthew J. Sahagian",
+			"    Courtney Cavin", "    matz-josh", "    Matthis Rouch",
+		       	"    ansi", "    Jens Taprogge", "    Fredrik Bergholtz",
+			"    Jeffrey Nelson", "    Scott Lawrence",
+			"    Cameron Nishiyama", "    Prashant V", "    Alastair Stuart",
+			"    David Carne", "    Nik Rolls", "    Filippo Forlani", 
+			"    Martin Kaltenbrunner", "    Adam Johnston",
+		        "    Matthew Westcott", "    Nils Schneider", "    Damien Marchal",
+			"    Joshua Oreman", "    Brett Ryland",
 			0};
 	for (i = 0; cnames[i] != 0; i++)
 		len += strlen(cnames[i]) + 9;
 	buf = malloc(sizeof(char) * (len + 47));
-	strcpy(buf, "Brought to you by:\n\n");
+	strcpy(buf, "Podzilla0 Lite:\n\n");
 	for (i = 0; cnames[i] != 0; i++) {
 		strcat(buf, "        ");
 		strcat(buf, cnames[i]);
 		strcat(buf, "\n");
 	}
-	strcat(buf, "\nhttp://www.ipodlinux.org\n");
+	strcat(buf, "\nsourceforge.net/projects/zeroslackr/\n");
 }
 
 static void populate_about() {

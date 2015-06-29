@@ -78,7 +78,7 @@ endif
 
 endif
 
-PZ_VER=\"podzilla `date -u +"%Y-%m-%d"`CVS\"
+PZ_VER=\"Podzilla0-Lite\"
 
 CFLAGS+=\
 	-Wall -g \
@@ -103,85 +103,26 @@ OBJS=\
 	header.o \
 	dialog.o \
 	appearance.o \
-	image.o \
 	browser.o \
 	ipod.o \
 	menu.o \
 	piezo.o \
 	textview.o \
-	mp3.o \
-	aac.o \
 	message.o \
 	slider.o \
-	audio.o \
 	about.o \
-	othello.o \
-	pong.o \
-	calendar.o \
 	btree.o \
-	itunes_db.o \
-	itunesmenu.o \
-	tictactoe.o \
-	tunnel.o \
-	calc.o \
-	poddraw.o \
-	playlist.o \
-	cube.o \
-	mandelpod.o \
-	matrix.o \
-	lights.o \
-	mlist.o \
-	minesweeper.o \
-	ipobble.o \
-	invaders.o \
 	vectorfont.o \
-	oss.o \
-	clocks.o \
+	mlist.o \
 	fonts.o \
-	tzx.o \
-	dialer.o \
-	wumpus.o \
 	settings.o \
 	usb.o \
 	fw.o \
-	video/video.o \
-	video/videocop.o \
-	vortex/console.o \
-	vortex/levels.o \
-	vortex/vortex.o \
-	vortex/globals.o \
-	vortex/gameobjs.o \
-	Steroids/asteroid.o \
-	Steroids/main.o \
-	Steroids/object.o \
-	Steroids/polygon.o \
-	Steroids/ship.o \
-	Steroids/shot.o \
-	Steroids/vector.o \
-	bluecube/box.o \
-	bluecube/main.o \
-	bluecube/pieces.o \
-	tuxchess/board.o \
-	tuxchess/data.o \
-	tuxchess/eval.o \
-	tuxchess/main.o \
-	tuxchess/search.o
+	podwrite.o \
+	clickwheel.o \
+	textinput.o \
+	textinput/dial.o \
 
-ifneq ($(IPOD),)
-OBJS+=\
-	mp3decoder.o
-endif
-
-# additions for MikMod builds...
-ifneq ($(MIKMOD),)
-OBJS+= mikmod/ipodmikmod.o
-LDFLAGS+= -L../mikmod/ipod/lib
-CFLAGS+= -DMIKMOD -I../mikmod/ipod/include
-ifneq ($(IPOD),)
-LDFLAGS+= -lmikmod -lmmio
-OBJS+= mikmod/mlist.o mikmod/marchive.o
-endif
-endif
 
 # locale stuff
 ifneq ($(LOCALE),)
@@ -206,10 +147,10 @@ endif
 all: podzilla
 
 podzilla: $(OBJS) Makefile
-	$(CC) $(OBJS) -o podzilla $(CFLAGS) $(LDFLAGS)
+	$(CC) $(OBJS) -o Podzilla0-Lite $(CFLAGS) $(LDFLAGS)
 
 clean: 
-	$(RM) $(OBJS) *~ podzilla podzilla.gdb podzilla.pot
+	$(RM) $(OBJS) *~ Podzilla0-Lite Podzilla0-Lite.gdb Podzilla0-Lite.pot
 
 translate:
-	xgettext -kN_ -k_ -o podzilla.pot `find . -type f -name '*.c' -print`
+	xgettext -kN_ -k_ -o Podzilla0-Lite.pot `find . -type f -name '*.c' -print`

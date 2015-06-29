@@ -22,9 +22,9 @@
 /* Global Settings */
 
 #ifdef IPOD
-#define IPOD_SETTINGS_FILE	"/etc/podzilla.conf"
+#define IPOD_SETTINGS_FILE	"/opt/Zillae/Podzilla0-Lite/Conf/podzilla0-lite.conf"
 #else
-#define IPOD_SETTINGS_FILE	"podzilla.conf"
+#define IPOD_SETTINGS_FILE	"/opt/Zillae/Podzilla0-Lite/Conf/podzilla0-lite.conf"
 #endif
 
 /* DISPLAY SETINGS 0 - 9 */
@@ -67,8 +67,9 @@
 #define DECORATIONS	(45)	/* appearance */
 #define BATTERY_DIGITS	(46)	/* appearance */
 #define DISPLAY_LOAD	(47)	/* appearance */
-#define FONT_FILE	(48)
+#define FONT_FILE		(48)
 #define SLIDE_TRANSIT	(49)
+#define TEXT_INPUT 50
 
 #define MIN_CONTRAST	0
 #define MAX_CONTRAST	128

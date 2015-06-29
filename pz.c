@@ -366,7 +366,7 @@ GR_WINDOW_ID pz_new_window(int x, int y, int w, int h, void(*do_draw)(void), int
 	GR_WINDOW_ID new_wid = GrNewWindowEx(GR_WM_PROPS_APPFRAME |
 			    GR_WM_PROPS_CAPTION |
 			    GR_WM_PROPS_CLOSEBOX,
-			    (GR_CHAR *)"podzilla",
+			    (GR_CHAR *)"Podzilla0-Lite",
 			    root_wid,
 			    x, y, w, h, WHITE);
 
@@ -445,8 +445,8 @@ main(int argc, char **argv)
 
 #ifdef LOCALE
 	setlocale(LC_ALL, "");
-	bindtextdomain("podzilla", LOCALEDIR);
-	textdomain("podzilla");
+	bindtextdomain("Podzilla0-Lite", LOCALEDIR);
+	textdomain("Podzilla0-Lite");
 #endif
 	root_gc = GrNewGC();
 	GrSetGCUseBackground(root_gc, GR_FALSE);
@@ -456,7 +456,7 @@ main(int argc, char **argv)
 	root_wid = GrNewWindowEx(GR_WM_PROPS_APPFRAME |
 			    GR_WM_PROPS_CAPTION |
 			    GR_WM_PROPS_CLOSEBOX,
-			    (GR_CHAR *)"podzilla",
+			    (GR_CHAR *)"Podzilla0-Lite",
 			    GR_ROOT_WINDOW_ID,
 			    0, 0, screen_info.cols, screen_info.rows, WHITE);
 
